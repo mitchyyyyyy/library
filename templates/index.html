@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Library System{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-md-12">
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Welcome to Library System</h1>
+            <p class="lead">Manage your book borrowing easily and efficiently</p>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'registration' %}" class="btn btn-primary btn-lg me-2">Get Started</a>
+                <a href="{% url 'login' %}" class="btn btn-secondary btn-lg">Login</a>
+            {% else %}
+                <a href="{% url 'book_list' %}" class="btn btn-primary btn-lg">Browse Books</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_books }}</h3>
+                <p class="card-text">Total Books</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ available_books }}</h3>
+                <p class="card-text">Available Books</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_users }}</h3>
+                <p class="card-text">Members</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h3>{{ total_borrowed }}</h3>
+                <p class="card-text">Currently Borrowed</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

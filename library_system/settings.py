@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 # Application definition
 
 INSTALLED_APPS = [
-    'books',
+    'library_app',
     'users',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Librarian Dashboard - Library System{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Librarian Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <h3>{{ total_books }}</h3>
+                <p>Total Books</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-warning text-white">
+            <div class="card-body">
+                <h3>{{ borrowed_books }}</h3>
+                <p>Currently Borrowed</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-danger text-white">
+            <div class="card-body">
+                <h3>{{ overdue_books }}</h3>
+                <p>Overdue Books</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <h3>{{ total_users }}</h3>
+                <p>Total Users</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="{% url 'add_book' %}" class="btn btn-success mb-3">➕ Add New Book</a>
+<a href="{% url 'book_list' %}" class="btn btn-info mb-3">View All Books</a>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Library System{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">My Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h5>Library Card Number: {{ user.userprofile.library_card_number }}</h5>
+                <p>Member Since: {{ user.userprofile.membership_date }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4>📖 Currently Borrowed Books</h4>
+{% if borrowed_books %}
+    <div class="table-responsive mb-5">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Author</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in borrowed_books %}
+                    <tr>
+                        <td>{{ record.book.title }}</td>
+                        <td>{{ record.book.author }}</td>
+                        <td>{{ record.borrow_date|date:"Y-m-d" }}</td>
+                        <td>
+                            {% if record.is_overdue %}
+                                <span class="text-danger"><strong>{{ record.due_date }} (Overdue!)</strong></span>
+                            {% else %}
+                                {{ record.due_date }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'return_book' record.id %}" class="btn btn-sm btn-warning">Return</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p class="alert alert-info">You haven't borrowed any books yet.</p>
+{% endif %}
+
+<h4>✅ Recently Returned Books</h4>
+{% if returned_books %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Author</th>
+                    <th>Return Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in returned_books %}
+                    <tr>
+                        <td>{{ record.book.title }}</td>
+                        <td>{{ record.book.author }}</td>
+                        <td>{{ record.return_date|date:"Y-m-d" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p class="alert alert-info">No returned books.</p>
+{% endif %}
+{% endblock %}

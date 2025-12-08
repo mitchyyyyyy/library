@@ -28,9 +28,6 @@
         .navbar a:hover {
             color: #3498db !important;
         }
-        .container-main {
-            padding: 30px 0;
-        }
         .card {
             border: none;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -102,9 +99,46 @@
     </div>
 
     <!-- MAIN CONTENT -->
-    <div class="container-main container">
-        {% block content %}{% endblock %}
+     <div class="container-main container">
+    <div class="row">
+        <!-- Sidebar -->
+        <aside class="col-md-3 col-lg-2 bg-light p-3 border-end">
+            <h5>Library Menu</h5>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">🏠 Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'book_list' %}">📚 Browse Books</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'borrowed_books' %}">📖 My Borrowed Books</a></li>
+                {% if user.is_authenticated and user.userprofile.is_librarian %}
+                    <li class="nav-item"><a class="nav-link" href="/admin/">⚙️ Admin Panel</a></li>
+                {% endif %}
+            </ul>
+
+            <hr>
+
+            <h6>Quick Stats</h6>
+            <ul class="list-unstyled">
+                <li>Total Books: {{ total_books }}</li>
+                <li>Available: {{ available_books }}</li>
+                <li>Borrowed: {{ total_borrowed }}</li>
+                <li>Users: {{ total_users }}</li>
+            </ul>
+
+            <hr>
+
+            <h6>Search</h6>
+            <form method="get" action="{% url 'book_list' %}">
+                <input type="text" class="form-control mb-2" name="search" placeholder="Search books...">
+                <button class="btn btn-primary w-100">Search</button>
+            </form>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="col-md-9 col-lg-10">
+            {% block content %}{% endblock %}
+        </main>
     </div>
+</div>
+
 
     <!-- FOOTER -->
     <footer>

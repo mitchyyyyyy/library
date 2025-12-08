@@ -17,7 +17,7 @@ class Book(models.Model):
     
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
-    isbn = models.CharField(max_length=13, unique=True)
+    isbn = models.CharField(max_length=13, unique=True, db_index=True)
     description = models.TextField(blank=True, null=True)
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='fiction')
     total_copies = models.IntegerField(default=1)
@@ -27,6 +27,9 @@ class Book(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
+        constraints = [
+            models.CheckConstraint(check=models.Q(available_copies__lte=models.F('total_copies')), name='available_not_exceed_total')
+        ]
         ordering = ['-created_at']
     
     def __str__(self):
@@ -74,6 +77,22 @@ class BorrowRecord(models.Model):
         return False
     
     def save(self, *args, **kwargs):
+        # If new record and status is borrowed → reduce available copies
+        if not self.pk and self.status == 'borrowed':
+            if self.book.available_copies > 0:
+                self.book.available_copies -= 1
+                self.book.save()
+
+        # If existing record and status changed to returned → increase available copies
+        elif self.pk:
+            old_status = BorrowRecord.objects.get(pk=self.pk).status
+            if old_status != self.status and self.status == 'returned':
+                if self.book.available_copies < self.book.total_copies:
+                    self.book.available_copies += 1
+                    self.book.save()
+
+        # Auto-set due date if missing
         if not self.due_date:
             self.due_date = (self.borrow_date + timedelta(days=14)).date()
+
         super().save(*args, **kwargs)

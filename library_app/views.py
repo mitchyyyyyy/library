@@ -5,16 +5,18 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.db.models import Q
 from datetime import date
+from .models import Book, BorrowRecord, UserProfile
 
 
 # HOME PAGE
 def index(request):
     """Homepage"""
+    
     context = {
-        'total_books': 0,
-        'available_books': 0,
-        'total_users': 0,
-        'total_borrowed': 0,
+        'total_books': Book.objects.count(),
+        'available_books': Book.objects.filter(available_copies__gt=0).count(),
+        'total_users': User.objects.count(),
+        'total_borrowed': BorrowRecord.objects.filter(status='borrowed').count(),
     }
     return render(request, 'index.html', context)
 
@@ -78,10 +80,16 @@ def logout_view(request):
 # BOOK LIST
 def book_list(request):
     """Browse books"""
-    books = []
     search_query = request.GET.get('search', '')
     category = request.GET.get('category', '')
-    
+
+    books = Book.objects.all()
+
+    if search_query:
+        books = books.filter(title__icontains=search_query)
+    if category:
+        books = books.filter(category=category)
+
     context = {
         'books': books,
         'search_query': search_query,
@@ -103,6 +111,13 @@ def borrow_book(request, book_id):
     """Borrow book"""
     messages.success(request, 'Book borrowed!')
     return redirect('book_list')
+
+
+#BORROWED BOOKS
+@login_required
+def borrowed_books(request):
+    records = BorrowRecord.objects.filter(user=request.user, status='borrowed')
+    return render(request, 'borrowed_books.html', {'records': records})
 
 
 # RETURN BOOK

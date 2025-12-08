@@ -14,4 +14,5 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('librarian/', views.librarian_dashboard, name='librarian_dashboard'),
     path('add-book/', views.add_book, name='add_book'),
+    path('borrowed-books/', views.borrowed_books, name='borrowed_books'),
 ]

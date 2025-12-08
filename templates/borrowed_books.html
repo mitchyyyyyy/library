@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}My Borrowed Books{% endblock %}
+
+{% block content %}
+<h2>My Borrowed Books</h2>
+
+<ul class="list-group">
+    {% for record in records %}
+        <li class="list-group-item">
+            <strong>{{ record.book.title }}</strong> by {{ record.book.author }}  
+            <br>
+            Borrowed on: {{ record.borrow_date|date:"M d, Y" }}  
+            Due: {{ record.due_date|date:"M d, Y" }}  
+            Status: {{ record.status }}
+        </li>
+    {% empty %}
+        <li class="list-group-item">You have not borrowed any books.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
